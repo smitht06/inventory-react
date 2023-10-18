@@ -1,25 +1,33 @@
 import logo from './logo.svg';
 import './App.css';
+import SearchBar from './SearchBar';
+import { useState } from 'react';
+import AddItem from './AddItem';
+import ItemsDisplay from './ItemsDisplay';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [filters, setFilters] = useState({});
+	const [data, setData] = useState({ items: [] });
+
+	const updateFilters = (searchParams) => {
+		setFilters(searchParams);
+	};
+
+	const addItemToData = (item) => {
+		let items = data['items'];
+    item.id = items.length;
+		items.push(item);
+		setData({ items: items });
+		console.log(data);
+	};
+
+	return (
+		<div className='App'>
+			<SearchBar updateSearchParams={updateFilters} />
+			<ItemsDisplay items={data['items']} />
+			<AddItem addItem={addItemToData} />
+		</div>
+	);
 }
 
 export default App;
