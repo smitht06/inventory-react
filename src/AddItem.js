@@ -13,18 +13,22 @@ function AddItem(props) {
 			type: type,
 			brand: brand,
 		});
-        setName("")
-        setPrice(0)
-        setType("")
-        setBrand("")
+		setName('');
+		setPrice(0);
+		setType('');
+		setBrand('');
 	};
 
 	return (
-		<div>
-			<h2>Add an item</h2>
-			<form>
+		<div className='container'>
+			<div className='row'>
+				<h2>Add an item</h2>
+			</div>
+
+			<div className='row'>
 				<label for='name-field'> Name: </label>
 				<input
+					className='form-control'
 					id='name-field'
 					type='text'
 					value={name}
@@ -32,6 +36,7 @@ function AddItem(props) {
 				/>
 				<label for='price-field'> Price: </label>
 				<input
+					className='form-control'
 					id='price-field'
 					type='number'
 					value={price}
@@ -39,6 +44,7 @@ function AddItem(props) {
 				/>
 				<label for='type-field'> Type: </label>
 				<input
+					className='form-control'
 					id='type-field'
 					type='text'
 					value={type}
@@ -46,15 +52,20 @@ function AddItem(props) {
 				/>
 				<label for='brand-field'> Brand: </label>
 				<input
+					className='form-control'
 					id='brand-field'
 					type='text'
 					value={brand}
 					onChange={(e) => setBrand(e.target.value)}
 				/>
-				<button type='button' onClick={addItemButtonPressed}>
+			</div>
+
+			<div className='row'>
+				<button type='button' className='btn btn-primary mt-3 ' onClick={addItemButtonPressed}>
 					Add Item
 				</button>
-			</form>
+			</div>
+
 			{/* <p>name: {name}</p>
 			<p>max-price: {price}</p>
 			<p>type: {type}</p>

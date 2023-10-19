@@ -1,13 +1,22 @@
 import logo from './logo.svg';
 import './App.css';
 import SearchBar from './SearchBar';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AddItem from './AddItem';
 import ItemsDisplay from './ItemsDisplay';
+import styled from 'styled-components';
+
+const Title = styled.h1`
+	color: blue;
+`;
 
 function App() {
 	const [filters, setFilters] = useState({});
 	const [data, setData] = useState({ items: [] });
+
+	useEffect(() => {
+		fetch('http://localhost:3000/items').then((response) => response.json()).then((data) => setData({items: data}))
+	},[]);
 
 	const updateFilters = (searchParams) => {
 		setFilters(searchParams);
@@ -15,17 +24,64 @@ function App() {
 
 	const addItemToData = (item) => {
 		let items = data['items'];
-    item.id = items.length;
-		items.push(item);
-		setData({ items: items });
-		console.log(data);
+
+		const requestOptions = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(item),
+		};
+
+		fetch('http://localhost:3000/items', requestOptions).then((response) =>
+			response.json().then((data) => {
+				items.push(data);
+				setData({ items: items });
+			})
+		);
+	};
+
+	const filterData = (data) => {
+		const filteredData = [];
+
+		if (!filters.name) {
+			return data;
+		}
+
+		for (const item of data) {
+			if (filters.name !== '' && item.name !== filters.name) {
+				continue;
+			}
+
+			if (filters.price !== 0 && item.price > filters.price) {
+				continue;
+			}
+
+			if (filters.type !== '' && item.type !== filters.type) {
+				continue;
+			}
+
+			if (filters.brand !== '' && item.brand !== filters.brand) {
+				continue;
+			}
+
+			filteredData.push(item);
+		}
+
+		return filteredData;
 	};
 
 	return (
-		<div className='App'>
-			<SearchBar updateSearchParams={updateFilters} />
-			<ItemsDisplay items={data['items']} />
-			<AddItem addItem={addItemToData} />
+		<div className='container'>
+			<div className='row mt-3'>
+				<ItemsDisplay items={filterData(data['items'])} />
+			</div>
+			<div className='row mt-3'>
+				<SearchBar updateSearchParams={updateFilters} />
+			</div>
+			<div className='row mt-3'>
+				<AddItem addItem={addItemToData} />
+			</div>
 		</div>
 	);
 }
