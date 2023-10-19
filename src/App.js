@@ -15,11 +15,29 @@ function App() {
 	const [data, setData] = useState({ items: [] });
 
 	useEffect(() => {
-		fetch('http://localhost:3000/items').then((response) => response.json()).then((data) => setData({items: data}))
-	},[]);
+		fetch('http://localhost:3000/items')
+			.then((response) => response.json())
+			.then((data) => setData({ items: data }));
+	}, []);
 
 	const updateFilters = (searchParams) => {
 		setFilters(searchParams);
+	};
+
+	const deleteItem = (item) => {
+		const items = data['items'];
+		const requestOptions = {
+			method: 'DELETE',
+		};
+		fetch(`http://localhost:3000/items/${item.id}`, requestOptions).then(
+			(response) => {
+				if (response.ok) {
+					const idx = items.indexOf(item);
+					items.splice(idx, 1);
+					setData({ items: items });
+				}
+			}
+		);
 	};
 
 	const addItemToData = (item) => {
@@ -74,7 +92,7 @@ function App() {
 	return (
 		<div className='container'>
 			<div className='row mt-3'>
-				<ItemsDisplay items={filterData(data['items'])} />
+				<ItemsDisplay deleteItem={deleteItem} items={filterData(data['items'])} />
 			</div>
 			<div className='row mt-3'>
 				<SearchBar updateSearchParams={updateFilters} />
